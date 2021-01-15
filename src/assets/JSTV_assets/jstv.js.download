@@ -1,0 +1,133 @@
+// https://psemphtml5player.northeurope.cloudapp.azure.com/app/reference/docs/Player.html
+var empError = false;
+function JSTV() {
+    "use strict";
+    var emp = null;
+    var fullScreenChangeEvent = false;
+    this.player = function (playerId, playerToken, channelId, customer, businessUnit, exposureApiURL) {
+        console.log(playerId, playerToken);
+        var video = document.getElementById(playerId);
+        if (video) {
+            var source = document.createElement('source');
+            source.src = '{"channelId":"'+channelId+'"}';
+            source.type = 'video/emp';
+            video.appendChild(source);
+            if (emp) {
+                emp.dispose();
+                console.log('Reseting existing player...');
+            } else {
+                console.log('Creating player...');
+            }
+            var options = {
+                'ericssonexposure'  : {
+                    'customer'      : customer,
+                    'businessUnit'  : businessUnit,
+                    'exposureApiURL': exposureApiURL,
+                    'sessionToken'  : playerToken
+                },
+                'autoplay': 'true',
+                'inactivityTimeout': 0
+            };
+            console.log(options);
+            emp = new empPlayer('#'+playerId, options);
+        }
+        return emp;
+    }
+    this.channel = function (channelId) {
+        if (emp) {
+            emp.startPlayback(null, channelId, null, null);
+            console.log('Changing channel... ', channelId);
+        }
+    }
+    this.payment = function (id, html) {
+        var div = document.getElementById(id);
+        div.innerHTML = html;
+        var form = document.getElementsByTagName('form')[0];
+        form.submit();
+    }
+    this.stop = function() {
+        if(emp) {
+            emp.stop();
+        }
+    }
+    this.resume = function() {
+        if(emp) {
+            emp.play();
+        }
+    }
+    this.pause = function() {
+        if(emp) {
+            emp.pause();
+        }
+    }
+    this.fullScreenChangeEvents = function() {
+        if(emp) {
+            if(!fullScreenChangeEvent) {
+                emp.on(empPlayer.Events.FULLSCREEN_CHANGE, (event, err) => {
+                   fullScreenChangeEvent = true;
+                    err = err || emp.getError();
+                    if(err == null) {
+                        console.log('fullScreenChangeEventInside:', fullScreenChangeEvent);
+                        console.log('FullScreenChangeEvent:', event);
+                    } else {
+                        console.log('error:', err);
+                    }
+                    /* For Firestick users, hide the video control bar when the player is in fullscreen */
+                    if(null!= localStorage.getItem('fireStickUser')) {
+                        /* If video is playing in normal screen */
+                        if( window.innerHeight != screen.height) {
+                            document.getElementsByClassName('vjs-control-bar')[0].style.display="flex";
+                            document.getElementsByClassName('emp-mediainfo-bar')[0].style.display="flex";
+                        }else{
+                            document.getElementsByClassName('vjs-control-bar')[0].style.display="none";
+                            document.getElementsByClassName('emp-mediainfo-bar')[0].style.display="none";
+                        }
+                    }
+                });
+            }
+        }
+    }
+    this.cancelFullScreenChange = function() {
+        if(emp){
+            if(fullScreenChangeEvent && document.getElementsByClassName("vjs-fullscreen-control vjs-control vjs-button")[0] !== null){
+                console.log('Inside Cancel Full Screen FullScreenChangeEvent:', fullScreenChangeEvent);
+                document.getElementsByClassName("vjs-fullscreen-control vjs-control vjs-button")[0].click();
+                console.log('Player:',emp);
+                fullScreenChangeEvent = false;
+            }
+        }
+    }
+    this.goFullScreen = function() {
+        if(emp){
+           document.getElementsByClassName("vjs-fullscreen-control vjs-control vjs-button")[0].click();     
+        }
+    }
+    this.pauseScreen = function() {
+        if(emp){
+            document.getElementsByClassName("vjs-play-control vjs-control vjs-button")[0].click();
+        }
+    }
+    this.makeFullScreenFalse = function() {
+        if(emp) {
+            fullScreenChangeEvent = false;
+        }
+    }
+    this.live = function() {
+        if(emp){
+            emp.gotoLive();
+            sessionStorage.removeItem('resume');
+        }
+    }
+    this.play = function() {
+        if(emp){
+            emp.play();
+        }
+    }
+    this.stop = function() {
+        if(emp){
+            emp.stop();
+        }
+    }
+    return this;
+}
+var jstv = new JSTV();
