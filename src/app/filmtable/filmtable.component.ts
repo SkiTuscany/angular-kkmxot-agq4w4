@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import Character from './Character';
 @Component({
-   selector: 'app-root',
-   templateUrl: './app.component.html',
-   styleUrls: ['./app.component.css']
+   selector: 'film-root',
+   templateUrl: './filmtable.component.html',
+   styleUrls: ['./filmtable.component.css']
 })
-export class AppComponent {
+export class FilmTableComponent {
    characters: Character[] = [
     {
     actor_name: 'Peter Dinklage',
