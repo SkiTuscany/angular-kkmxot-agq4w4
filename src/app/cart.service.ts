@@ -27,4 +27,8 @@ export class CartService {
   getShippingPrices() {
     return this.http.get('/assets/shipping.json');
   }
+
+  getFilmTable() {
+    return this.http.get('/assets/filmtable.json');
+  }
 }

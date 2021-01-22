@@ -11,7 +11,7 @@ export class FilmTableComponent {
     actor_name: 'Peter Dinklage',
     character_name: 'Tyrion Lannister',
     gender: 'Male',
-        status: 'Alive'
+    status: 'Alive'
     },
     {
     actor_name: 'Sean Bean',

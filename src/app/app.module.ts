@@ -24,6 +24,7 @@ import { FilmTableComponent } from './filmtable/filmtable.component';
       { path: 'products/:productId', component: ProductDetailsComponent },
       { path: 'cart', component: CartComponent },
       { path: 'shipping', component: ShippingComponent },
+      { path: 'FilmTableComponent', component: FilmTableComponent },
     ])
   ],
   declarations: [
